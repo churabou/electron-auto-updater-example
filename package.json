@@ -1,0 +1,13 @@
+{
+  "name": "electron-update-example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "churabou",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^11.2.3"
+  }
+}
