@@ -5,9 +5,14 @@
   "author": "churabou",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^11.2.3"
+    "electron": "^11.2.3",
+    "electron-builder": "^22.9.1"
+  },
+  "build": {
+    "appId": "com.churabou.electron-update-example"
   }
 }
