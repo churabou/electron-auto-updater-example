@@ -1,5 +1,5 @@
 const { app, dialog, BrowserWindow } = require("electron");
-const { autoUpdater } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 
 let win;
@@ -43,7 +43,7 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 log.info("App starting...");
 
-autoUpdater.setFeedURL("http://localhost:8888/update.json");
+autoUpdater.setFeedURL("http://localhost:8888");
 log.info(autoUpdater.getFeedURL());
 
 function sendStatusToWindow(text) {
