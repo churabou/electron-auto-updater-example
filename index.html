@@ -2,15 +2,27 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Electron Update Example</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 </head>
 <body style="background: white;">
-    <h1>Hello World!</h1>
-    <p>
-        We are using node <script>document.write(process.versions.node)</script>,
-        Chrome <script>document.write(process.versions.chrome)</script>,
-        and Electron <script>document.write(process.versions.electron)</script>.
-    </p>
+    Current version: <span id="version">vX.Y.Z</span>
+    <div id="messages"></div>
+  <script>
+  // Display the current version
+  let version = window.location.hash.substring(1);
+  document.getElementById('version').innerText = version;
+  
+  // Listen for messages
+  const {ipcRenderer} = require('electron');
+  ipcRenderer.on('message', function(event, text) {
+    var container = document.getElementById('messages');
+    var message = document.createElement('div');
+    message.innerHTML = text;
+    container.appendChild(message);
+  })
+  </script>
 </body>
 </html>
+
+

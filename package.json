@@ -1,5 +1,5 @@
 {
-  "name": "electron-update-example",
+  "name": "electron-auto-updater-example",
   "version": "1.0.0",
   "main": "index.js",
   "author": "churabou",
@@ -10,9 +10,19 @@
   },
   "devDependencies": {
     "electron": "^11.2.3",
-    "electron-builder": "^22.9.1"
+    "electron-builder": "^22.9.1",
+    "http-server": "^0.12.3"
   },
   "build": {
-    "appId": "com.churabou.electron-update-example"
+    "appId": "com.churabou.electron-auto-updater-example",
+    "files": [
+      "!.out"
+    ],
+    "directories": {
+      "output": ".out/1.0.0"
+    }
+  },
+  "dependencies": {
+    "electron-log": "^4.3.1"
   }
 }

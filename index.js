@@ -1,27 +1,85 @@
-const { app, BrowserWindow } = require('electron')
+const { app, dialog, BrowserWindow } = require("electron");
+const { autoUpdater } = require("electron");
+const log = require("electron-log");
 
-function createWindow () {
-  const win = new BrowserWindow({
+let win;
+
+function createWindow() {
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
-    }
-  })
-
-  win.loadFile('index.html')
+      nodeIntegration: true,
+    },
+  });
+  win.webContents.openDevTools();
+  win.on("closed", () => {
+    win = null;
+  });
+  win.loadURL(`file://${__dirname}/index.html#v${app.getVersion()}`);
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
   }
-})
+});
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
+    createWindow();
   }
-})
+});
+
+app.on("ready", function () {
+  log.info("app ready will checkForUpdates");
+  autoUpdater.checkForUpdates();
+});
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "info";
+log.info("App starting...");
+
+autoUpdater.setFeedURL("http://localhost:8888/update.json");
+log.info(autoUpdater.getFeedURL());
+
+function sendStatusToWindow(text) {
+  log.info(text);
+  win.webContents.send("message", text);
+}
+
+autoUpdater.on("checking-for-update", () => {
+  sendStatusToWindow("Checking for update...");
+});
+autoUpdater.on("update-available", (ev, info) => {
+  sendStatusToWindow(`Update available. ${info}`);
+});
+autoUpdater.on("update-not-available", (ev, info) => {
+  sendStatusToWindow(`Update not available. ${info}`);
+});
+autoUpdater.on("error", (ev, err) => {
+  sendStatusToWindow(`Error in auto-updater. ${err}`);
+});
+autoUpdater.on("download-progress", (ev, progressObj) => {
+  sendStatusToWindow(`Download progress... ${progressObj}`);
+});
+autoUpdater.on("update-downloaded", (ev, info) => {
+  sendStatusToWindow(`Update downloaded; ${info}`);
+});
+
+autoUpdater.on("update-downloaded", (ev, info) => {
+  const option = {
+    type: "info",
+    buttons: ["更新して再起動", "あとで"],
+    message: "アップデート",
+    detail:
+      "新しいバージョンをダウンロードしました。再起動して更新を適用しますか？",
+  };
+  dialog.showMessageBox(win, option).then((returnValue) => {
+    if (returnValue.response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });
+});
