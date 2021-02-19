@@ -19,8 +19,6 @@ function createWindow() {
   win.loadURL(`file://${__dirname}/index.html#v${app.getVersion()}`);
 }
 
-app.whenReady().then(createWindow);
-
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -34,8 +32,11 @@ app.on("activate", () => {
 });
 
 app.on("ready", function () {
-  log.info("app ready will checkForUpdates");
-  autoUpdater.checkForUpdates();
+  createWindow();
+  setTimeout(() => {
+    sendStatusToWindow("app ready will checkForUpdates");
+    autoUpdater.checkForUpdates();
+  }, 1000);
 });
 
 autoUpdater.logger = log;
